@@ -1,12 +1,17 @@
 
 import javax.swing.*;
-
+import java.awt.*;
+import java.awt.event.*;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+class CloseActionHandler implements ActionListener{
+    public void actionPerformed(ActionEvent e){
+        
+    }
+}
 /**
  *
  * @author dav
@@ -16,6 +21,7 @@ public class editorFrame extends javax.swing.JFrame {
     /**
      * Creates new form editorFrame
      */
+    
     public editorFrame() {
         initComponents();
     }
@@ -33,7 +39,6 @@ public class editorFrame extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -49,9 +54,6 @@ public class editorFrame extends javax.swing.JFrame {
         jMenu1.add(jMenuItem1);
 
         jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
 
@@ -71,7 +73,23 @@ public class editorFrame extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-        jTabbedPane1.addTab("Untitled Document", new JScrollPane(new JTextArea(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS));
+        JPanel panel = new JPanel();
+        JButton button = new JButton("x");
+        button.addActionListener((ActionEvent e) -> {
+            int i = jTabbedPane1.indexOfTabComponent(panel);
+            if (i != -1) {
+                jTabbedPane1.remove(i);
+            }
+        });
+        
+        JLabel label = new JLabel("Untitled Document");
+        
+        panel.add(button);
+        panel.add(label);
+        
+        jTabbedPane1.addTab("Untitled Document", new JScrollPane(new JTextArea(),
+                            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS));
+        jTabbedPane1.setTabComponentAt(jTabbedPane1.getTabCount() - 1, panel);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
@@ -111,7 +129,6 @@ public class editorFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JTabbedPane jTabbedPane1;
