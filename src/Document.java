@@ -8,14 +8,14 @@
  *
  * @author dav
  */
-public class document {
+public class Document {
     private String text;
     
-    public document(String text){
+    public Document(String text){
         this.text = text;
     }
     
-    public document(){
+    public Document(){
         
     }
     

@@ -1,7 +1,7 @@
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -39,6 +39,7 @@ public class editorFrame extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -52,6 +53,14 @@ public class editorFrame extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("save");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
 
         jMenuBar1.add(jMenu1);
 
@@ -73,6 +82,17 @@ public class editorFrame extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
+        createNewDoc();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fileSave = new JFileChooser();
+        fileSave.showOpenDialog(new JFrame());
+        saveFile(fileSave.getSelectedFile());
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void createNewDoc(){
         JPanel panel = new JPanel();
         JButton button = new JButton("x");
         button.addActionListener((ActionEvent e) -> {
@@ -84,14 +104,27 @@ public class editorFrame extends javax.swing.JFrame {
         
         JLabel label = new JLabel("Untitled Document");
         
+        panel.add(label);        
         panel.add(button);
-        panel.add(label);
         
-        jTabbedPane1.addTab("Untitled Document", new JScrollPane(new JTextArea(),
+        jTabbedPane1.addTab(null, new JScrollPane(new JTextArea(),
                             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS));
         jTabbedPane1.setTabComponentAt(jTabbedPane1.getTabCount() - 1, panel);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
+    }    
+    
+    private void saveFile(File file){
+        JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
+        JTextArea textarea = (JTextArea) sp.getViewport().getView(); 
+        
+        try{
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(textarea.getText());
+            }
+        } catch(IOException ex){
+            JOptionPane.showMessageDialog(new JFrame(), "An Error has occured!" + "\n" + "File could not be saved.");
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -131,6 +164,7 @@ public class editorFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }
