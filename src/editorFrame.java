@@ -17,13 +17,14 @@ class CloseActionHandler implements ActionListener{
  * @author dav
  */
 public class editorFrame extends javax.swing.JFrame {
-
+    private String defaultTitle = "Untitled Document";
     /**
      * Creates new form editorFrame
      */
     
     public editorFrame() {
         initComponents();
+        createNewFile();
     }
 
     /**
@@ -40,10 +41,12 @@ public class editorFrame extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jMenu1.setText("File");
+        jMenu1.setName("openMenuItem"); // NOI18N
 
         jMenuItem1.setText("new");
         jMenuItem1.setName("addNewDoc"); // NOI18N
@@ -61,6 +64,14 @@ public class editorFrame extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItem2);
+
+        jMenuItem3.setText("open");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
 
         jMenuBar1.add(jMenu1);
 
@@ -82,7 +93,7 @@ public class editorFrame extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-        createNewDoc();
+        createNewFile();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -92,7 +103,44 @@ public class editorFrame extends javax.swing.JFrame {
         saveFile(fileSave.getSelectedFile());
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
-    private void createNewDoc(){
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fileOpen = new JFileChooser();
+	fileOpen.showOpenDialog(new JFrame());
+	openFile(fileOpen.getSelectedFile());
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void openFile(File file){        
+        JTextArea textarea;
+        if(docEmpty()){
+            JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
+            textarea = (JTextArea) sp.getViewport().getView();
+            updateDocName(file);
+        } else{
+            textarea = new JTextArea();          
+            createNewFile(textarea, file.getName());
+        }
+        
+        try{
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line = null;
+                StringBuilder sb = new StringBuilder();
+                while((line = reader.readLine()) != null){
+                    sb.append(line).append("\n");
+                }
+                textarea.setText(sb.toString());
+            }
+            } catch (Exception ex){
+                System.out.println("couldn't read the card file");
+            }        
+        
+    }
+    
+    private void createNewFile(){
+        createNewFile(new JTextArea(), defaultTitle);
+    }
+    
+    private void createNewFile(JTextArea textarea, String title){
         JPanel panel = new JPanel();
         JButton button = new JButton("x");
         button.addActionListener((ActionEvent e) -> {
@@ -102,12 +150,12 @@ public class editorFrame extends javax.swing.JFrame {
             }
         });
         
-        JLabel label = new JLabel("Untitled Document");
+        JLabel label = new JLabel(title);
         
         panel.add(label);        
         panel.add(button);
         
-        jTabbedPane1.addTab(null, new JScrollPane(new JTextArea(),
+        jTabbedPane1.addTab(null, new JScrollPane(textarea,
                             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS));
         jTabbedPane1.setTabComponentAt(jTabbedPane1.getTabCount() - 1, panel);
     }    
@@ -123,6 +171,30 @@ public class editorFrame extends javax.swing.JFrame {
         } catch(IOException ex){
             JOptionPane.showMessageDialog(new JFrame(), "An Error has occured!" + "\n" + "File could not be saved.");
         }
+        
+        updateDocName(file);
+        
+    }
+    
+    private void updateDocName(File file){
+        JLabel temp;
+        JPanel panel = (JPanel) jTabbedPane1.getTabComponentAt(jTabbedPane1.getSelectedIndex());
+        for(int i = 0; i < panel.getComponentCount(); i++){
+            if(panel.getComponent(i) instanceof JLabel){
+                temp = (JLabel) panel.getComponent(i);
+                temp.setText(file.getName());
+            }                
+        }
+    }
+    
+    private boolean docEmpty(){
+        if(jTabbedPane1.getComponentCount() == 0)
+            return false;
+        
+        JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
+        JTextArea textarea = (JTextArea) sp.getViewport().getView(); 
+        
+        return "".equals(textarea.getText()) || textarea.getText() == null;
     }
     
     /**
@@ -165,6 +237,7 @@ public class editorFrame extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }
