@@ -2,22 +2,20 @@
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.*;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-class CloseActionHandler implements ActionListener{
-    public void actionPerformed(ActionEvent e){
-        
-    }
-}
 /**
  *
  * @author dav
  */
 public class editorFrame extends javax.swing.JFrame {
-    private String defaultTitle = "Untitled Document";
+    private final String defaultTitle = "Untitled Document";
+    private final ArrayList<Document> documents = new ArrayList<>();
+    private Document temp;
     /**
      * Creates new form editorFrame
      */
@@ -113,8 +111,11 @@ public class editorFrame extends javax.swing.JFrame {
     private void openFile(File file){        
         JTextArea textarea;
         if(docEmpty()){
-            JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
-            textarea = (JTextArea) sp.getViewport().getView();
+            /*JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
+            textarea = (JTextArea) sp.getViewport().getView();*/
+                                    
+            textarea = temp.getTextArea();
+            temp.setPath(file.getPath());
             updateDocName(file);
         } else{
             textarea = new JTextArea();          
@@ -123,7 +124,7 @@ public class editorFrame extends javax.swing.JFrame {
         
         try{
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                String line = null;
+                String line;
                 StringBuilder sb = new StringBuilder();
                 while((line = reader.readLine()) != null){
                     sb.append(line).append("\n");
@@ -141,23 +142,7 @@ public class editorFrame extends javax.swing.JFrame {
     }
     
     private void createNewFile(JTextArea textarea, String title){
-        JPanel panel = new JPanel();
-        JButton button = new JButton("x");
-        button.addActionListener((ActionEvent e) -> {
-            int i = jTabbedPane1.indexOfTabComponent(panel);
-            if (i != -1) {
-                jTabbedPane1.remove(i);
-            }
-        });
-        
-        JLabel label = new JLabel(title);
-        
-        panel.add(label);        
-        panel.add(button);
-        
-        jTabbedPane1.addTab(null, new JScrollPane(textarea,
-                            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS));
-        jTabbedPane1.setTabComponentAt(jTabbedPane1.getTabCount() - 1, panel);
+        documents.add(new Document(jTabbedPane1, documents));
     }    
     
     private void saveFile(File file){
@@ -177,24 +162,36 @@ public class editorFrame extends javax.swing.JFrame {
     }
     
     private void updateDocName(File file){
-        JLabel temp;
+        /*JLabel tempLabel;
         JPanel panel = (JPanel) jTabbedPane1.getTabComponentAt(jTabbedPane1.getSelectedIndex());
         for(int i = 0; i < panel.getComponentCount(); i++){
             if(panel.getComponent(i) instanceof JLabel){
-                temp = (JLabel) panel.getComponent(i);
-                temp.setText(file.getName());
+                tempLabel = (JLabel) panel.getComponent(i);
+                tempLabel.setText(file.getName());
             }                
-        }
+        }*/
+        
+        temp.setFileName(file.getName());
     }
     
     private boolean docEmpty(){
-        if(jTabbedPane1.getComponentCount() == 0)
+        temp = null;
+        if(documents.isEmpty())
             return false;
         
-        JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
+        for(Document doc : documents){
+            if(doc.getFilePath() == null && (doc.getTextArea().getText() == null || "".equals(doc.getTextArea().getText()))){
+                temp = doc;
+                return true;
+            }
+        }
+        
+        return false;
+        
+        /*JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
         JTextArea textarea = (JTextArea) sp.getViewport().getView(); 
         
-        return "".equals(textarea.getText()) || textarea.getText() == null;
+        return "".equals(textarea.getText()) || textarea.getText() == null;*/
     }
     
     /**
