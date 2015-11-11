@@ -96,9 +96,25 @@ public class editorFrame extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-        JFileChooser fileSave = new JFileChooser();
-        fileSave.showOpenDialog(new JFrame());
-        saveFile(fileSave.getSelectedFile());
+        JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
+        File file;
+        for(Document doc : documents){
+            if(doc.getScrollPane() == sp){
+                temp = doc;
+                break;
+            }
+        }
+        
+        if(temp.getFilePath() == null){
+            JFileChooser fileSave = new JFileChooser();
+            fileSave.showOpenDialog(new JFrame());      
+            file = fileSave.getSelectedFile();
+            temp.setPath(file.getPath());
+        } else {
+            file = new File(temp.getFilePath());
+        }
+        
+        saveFile(file);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -108,20 +124,30 @@ public class editorFrame extends javax.swing.JFrame {
 	openFile(fileOpen.getSelectedFile());
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
-    private void openFile(File file){        
+    private void openFile(File file){  
+        boolean exists = false;
         JTextArea textarea;
-        if(docEmpty()){
-            /*JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
-            textarea = (JTextArea) sp.getViewport().getView();*/
-                                    
+        if(docEmpty()){                                    
             textarea = temp.getTextArea();
-            temp.setPath(file.getPath());
-            updateDocName(file);
+            exists = true;
         } else{
-            textarea = new JTextArea();          
-            createNewFile(textarea, file.getName());
+            textarea = new JTextArea(); 
+            temp = new Document(jTabbedPane1, documents, textarea);
         }
+                
+        temp.setPath(file.getPath());
+        updateDocName(file);
         
+        readToFile(file, textarea);
+        
+        if(exists == false){            
+            documents.add(temp);            
+        }          
+        
+        jTabbedPane1.setSelectedComponent(temp.getScrollPane());
+    }
+    
+    private void readToFile(File file, JTextArea textarea){
         try{
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
@@ -133,25 +159,18 @@ public class editorFrame extends javax.swing.JFrame {
             }
             } catch (Exception ex){
                 System.out.println("couldn't read the card file");
-            }        
-        
+            }
     }
     
     private void createNewFile(){
-        createNewFile(new JTextArea(), defaultTitle);
-    }
-    
-    private void createNewFile(JTextArea textarea, String title){
-        documents.add(new Document(jTabbedPane1, documents));
+        Document doc = new Document(jTabbedPane1, documents, new JTextArea());
+        documents.add(doc);
     }    
     
     private void saveFile(File file){
-        JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
-        JTextArea textarea = (JTextArea) sp.getViewport().getView(); 
-        
         try{
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                writer.write(textarea.getText());
+                writer.write(temp.getTextArea().getText());
             }
         } catch(IOException ex){
             JOptionPane.showMessageDialog(new JFrame(), "An Error has occured!" + "\n" + "File could not be saved.");
@@ -161,16 +180,7 @@ public class editorFrame extends javax.swing.JFrame {
         
     }
     
-    private void updateDocName(File file){
-        /*JLabel tempLabel;
-        JPanel panel = (JPanel) jTabbedPane1.getTabComponentAt(jTabbedPane1.getSelectedIndex());
-        for(int i = 0; i < panel.getComponentCount(); i++){
-            if(panel.getComponent(i) instanceof JLabel){
-                tempLabel = (JLabel) panel.getComponent(i);
-                tempLabel.setText(file.getName());
-            }                
-        }*/
-        
+    private void updateDocName(File file){        
         temp.setFileName(file.getName());
     }
     
@@ -187,11 +197,6 @@ public class editorFrame extends javax.swing.JFrame {
         }
         
         return false;
-        
-        /*JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
-        JTextArea textarea = (JTextArea) sp.getViewport().getView(); 
-        
-        return "".equals(textarea.getText()) || textarea.getText() == null;*/
     }
     
     /**

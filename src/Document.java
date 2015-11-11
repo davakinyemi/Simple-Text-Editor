@@ -17,13 +17,14 @@ public class Document {
     private JTextArea textArea;
     private JPanel panel;
     private JLabel label;
+    private JScrollPane scrollpane;
     private ArrayList<Document> documents;
     
-    public Document(JTabbedPane tb, ArrayList<Document> documents){
+    public Document(JTabbedPane tb, ArrayList<Document> documents, JTextArea textarea){
         this.documents = documents;
         tabbedPane = tb;
         fileName = "Untitled Document";
-        textArea = new JTextArea();
+        textArea = textarea;
         initialize();
     }
     
@@ -31,6 +32,8 @@ public class Document {
         panel = new JPanel();
         JButton button = new JButton("x");  
         label = new JLabel(fileName);
+        scrollpane = new JScrollPane(textArea,
+                            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         
         button.addActionListener((ActionEvent e) -> {
             int i = tabbedPane.indexOfTabComponent(panel);
@@ -41,9 +44,9 @@ public class Document {
         panel.add(label);        
         panel.add(button);
         
-        tabbedPane.addTab(null, new JScrollPane(textArea,
-                            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS));
+        tabbedPane.addTab(null, scrollpane);
         tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, panel);
+        tabbedPane.setSelectedComponent(this.scrollpane);
         textArea.requestFocus();
     }
     
@@ -63,5 +66,9 @@ public class Document {
     
     public JTextArea getTextArea(){
         return textArea;
+    }
+    
+    public JScrollPane getScrollPane(){
+        return scrollpane;
     }
 }
