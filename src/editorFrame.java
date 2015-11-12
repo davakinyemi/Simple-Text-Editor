@@ -1,6 +1,5 @@
 
 import javax.swing.*;
-import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 /*
@@ -13,9 +12,8 @@ import java.util.*;
  * @author dav
  */
 public class editorFrame extends javax.swing.JFrame {
-    private final String defaultTitle = "Untitled Document";
-    private final ArrayList<Document> documents = new ArrayList<>();
-    private Document temp;
+    private final ArrayList<Document> documents = new ArrayList<>(); // list to store existing documents
+    private Document temp; // placeholder for dealing with documents
     /**
      * Creates new form editorFrame
      */
@@ -40,6 +38,13 @@ public class editorFrame extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
+        jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -73,6 +78,38 @@ public class editorFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
+        jMenu2.setText("Edit");
+
+        jMenuItem4.setText("undo");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem4);
+
+        jMenuItem5.setText("redo");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem5);
+
+        jMenuItem6.setText("cut");
+        jMenu2.add(jMenuItem6);
+
+        jMenuItem7.setText("copy");
+        jMenu2.add(jMenuItem7);
+
+        jMenuItem8.setText("paste");
+        jMenu2.add(jMenuItem8);
+
+        jMenuItem9.setText("select all");
+        jMenu2.add(jMenuItem9);
+
+        jMenuBar1.add(jMenu2);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -93,30 +130,25 @@ public class editorFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         createNewFile();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
+    // eventhandling method for saving files
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        // TODO add your handling code here:
-        JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent();
+        // TODO add your handling code here:        
         File file;
-        for(Document doc : documents){
-            if(doc.getScrollPane() == sp){
-                temp = doc;
-                break;
-            }
-        }
         
-        if(temp.getFilePath() == null){
+        getSelectedDoc();
+        
+        if(temp.getFilePath() == null){ // if the document doesn't have a file path i.e. has not been saved yet
             JFileChooser fileSave = new JFileChooser();
             fileSave.showOpenDialog(new JFrame());      
             file = fileSave.getSelectedFile();
             temp.setPath(file.getPath());
         } else {
-            file = new File(temp.getFilePath());
+            file = new File(temp.getFilePath()); // otherwise get its file path
         }
         
         saveFile(file);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-
+    // eventhandling method for opening files
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
         JFileChooser fileOpen = new JFileChooser();
@@ -124,10 +156,24 @@ public class editorFrame extends javax.swing.JFrame {
 	openFile(fileOpen.getSelectedFile());
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
+    // undo
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        // TODO add your handling code here:
+        getSelectedDoc();
+        temp.undo();
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    // redo
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        // TODO add your handling code here:
+        getSelectedDoc();
+        temp.redo();
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+    
     private void openFile(File file){  
         boolean exists = false;
         JTextArea textarea;
-        if(docEmpty()){                                    
+        if(docEmpty()){ // check if a tab with an empty text area exists                               
             textarea = temp.getTextArea();
             exists = true;
         } else{
@@ -158,7 +204,7 @@ public class editorFrame extends javax.swing.JFrame {
                 textarea.setText(sb.toString());
             }
             } catch (Exception ex){
-                System.out.println("couldn't read the card file");
+                JOptionPane.showMessageDialog(new JFrame(), "couldn't read the file");
             }
     }
     
@@ -182,6 +228,16 @@ public class editorFrame extends javax.swing.JFrame {
     
     private void updateDocName(File file){        
         temp.setFileName(file.getName());
+    }
+    
+    private void getSelectedDoc(){
+        JScrollPane sp = (JScrollPane) jTabbedPane1.getSelectedComponent(); // get the currently selected tab by its component
+        for(Document doc : documents){ // loop through the documents list and find the document whose scrollbar component corresponds to the one currently selected 
+            if(doc.getScrollPane() == sp){
+                temp = doc;
+                break;
+            }
+        }
     }
     
     private boolean docEmpty(){
@@ -236,10 +292,17 @@ public class editorFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }

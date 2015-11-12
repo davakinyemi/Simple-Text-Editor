@@ -6,6 +6,8 @@
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
+import javax.swing.undo.*;
+
 /**
  *
  * @author dav
@@ -19,6 +21,8 @@ public class Document {
     private JLabel label;
     private JScrollPane scrollpane;
     private ArrayList<Document> documents;
+    private CompoundUndoManager undoManager;
+    private JButton undo, redo;
     
     public Document(JTabbedPane tb, ArrayList<Document> documents, JTextArea textarea){
         this.documents = documents;
@@ -29,6 +33,9 @@ public class Document {
     }
     
     private void initialize(){
+        undoManager = new CompoundUndoManager(textArea);
+        undo = new JButton(undoManager.getUndoAction());
+        redo = new JButton(undoManager.getRedoAction());
         panel = new JPanel();
         JButton button = new JButton("x");  
         label = new JLabel(fileName);
@@ -40,6 +47,8 @@ public class Document {
             tabbedPane.remove(i);
             documents.remove(this);   
         });
+        
+        //textArea.getDocument().addUndoableEditListener(undoManager);
         
         panel.add(label);        
         panel.add(button);
@@ -70,5 +79,13 @@ public class Document {
     
     public JScrollPane getScrollPane(){
         return scrollpane;
+    }
+    
+    public void undo(){
+        undo.doClick();
+    }
+    
+    public void redo(){
+        redo.doClick();
     }
 }
