@@ -1,4 +1,5 @@
 
+import java.awt.*;
 import javax.swing.*;
 import java.io.*;
 import java.util.*;
@@ -20,6 +21,7 @@ public class editorFrame extends javax.swing.JFrame {
     
     public editorFrame() {
         initComponents();
+        shortCuts();
         createNewFile();
     }
 
@@ -38,6 +40,9 @@ public class editorFrame extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem11 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
@@ -76,6 +81,30 @@ public class editorFrame extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem3);
 
+        jMenuItem10.setText("page format");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem10);
+
+        jMenuItem11.setText("print");
+        jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem11ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem11);
+
+        jMenuItem12.setText("exit");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem12);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Edit");
@@ -97,15 +126,35 @@ public class editorFrame extends javax.swing.JFrame {
         jMenu2.add(jMenuItem5);
 
         jMenuItem6.setText("cut");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem6);
 
         jMenuItem7.setText("copy");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem7);
 
         jMenuItem8.setText("paste");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem8);
 
         jMenuItem9.setText("select all");
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem9);
 
         jMenuBar1.add(jMenu2);
@@ -169,6 +218,53 @@ public class editorFrame extends javax.swing.JFrame {
         getSelectedDoc();
         temp.redo();
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    // cut
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        // TODO add your handling code here:
+        getSelectedDoc();
+        temp.getTextArea().cut();
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    // copy
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        // TODO add your handling code here:
+        getSelectedDoc();
+        temp.getTextArea().copy();
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    // paste
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        // TODO add your handling code here:
+        getSelectedDoc();
+        temp.getTextArea().paste();
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    // select All
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        // TODO add your handling code here:
+        getSelectedDoc();
+        temp.getTextArea().selectAll();
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    // page format
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        // TODO add your handling code here:
+        getSelectedDoc();
+        temp.pageFormat();
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    // print
+    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+        // TODO add your handling code here:
+        getSelectedDoc();
+        temp.printDoc();
+    }//GEN-LAST:event_jMenuItem11ActionPerformed
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
     
     private void openFile(File file){  
         boolean exists = false;
@@ -239,6 +335,20 @@ public class editorFrame extends javax.swing.JFrame {
             }
         }
     }
+        
+    private void shortCuts(){
+        jMenuItem1.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask())); // new
+        jMenuItem2.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask())); // save
+        jMenuItem3.setAccelerator(KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask())); // open
+        jMenuItem4.setAccelerator(KeyStroke.getKeyStroke('Z', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask())); // undo
+        jMenuItem5.setAccelerator(KeyStroke.getKeyStroke('Y', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask())); // redo
+        jMenuItem6.setAccelerator(KeyStroke.getKeyStroke('X', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask())); // cut
+        jMenuItem7.setAccelerator(KeyStroke.getKeyStroke('C', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask())); // copy
+        jMenuItem8.setAccelerator(KeyStroke.getKeyStroke('V', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask())); // paste
+        jMenuItem9.setAccelerator(KeyStroke.getKeyStroke('A', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask())); // select all
+        jMenuItem11.setAccelerator(KeyStroke.getKeyStroke('P', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask())); // print 
+        jMenuItem12.setAccelerator(KeyStroke.getKeyStroke('Q', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask())); // exit
+    }
     
     private boolean docEmpty(){
         temp = null;
@@ -295,6 +405,9 @@ public class editorFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

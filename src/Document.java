@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 import java.awt.event.*;
+import java.awt.print.*;
 import javax.swing.*;
 import java.util.*;
 import javax.swing.undo.*;
@@ -23,6 +24,8 @@ public class Document {
     private ArrayList<Document> documents;
     private CompoundUndoManager undoManager;
     private JButton undo, redo;
+    private PrinterJob pJob;
+    private PageFormat format;
     
     public Document(JTabbedPane tb, ArrayList<Document> documents, JTextArea textarea){
         this.documents = documents;
@@ -87,5 +90,21 @@ public class Document {
     
     public void redo(){
         redo.doClick();
+    }
+    
+    public void pageFormat(){
+        pJob = PrinterJob.getPrinterJob();
+        format = pJob.pageDialog(pJob.defaultPage());        
+    }
+    
+    public void printDoc(){
+        pJob = PrinterJob.getPrinterJob();
+            if(pJob.printDialog()) {
+                try {
+                    pJob.print();
+                } catch (Exception ex) {
+                    
+                }
+            }
     }
 }
